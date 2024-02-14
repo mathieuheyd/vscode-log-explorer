@@ -93,6 +93,21 @@ export class ServicesFilterProvider implements vscode.TreeDataProvider<ServiceFi
         this.configUpdater.update(config);
     }
 
+    selectSingle(service: ServiceFilter): void {
+        const config = this.configUpdater.current();
+        if (config === undefined)
+            return;
+
+        if (config.filteredServices === undefined)
+            return;
+
+        for (const configService of config.filteredServices) {
+            configService.selected = configService.serviceName == service.serviceName;
+        }
+        this.configUpdater.update(config);
+		this._onDidChangeTreeData.fire();
+    }
+
     async fetchAllServices(fileUri: vscode.Uri): Promise<ServiceLogCount[]> {
         const command = await catCommand(fileUri);
         return this.fetchServicesLogCount([command]);

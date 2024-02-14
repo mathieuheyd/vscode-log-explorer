@@ -116,12 +116,17 @@ export function activate(context: vscode.ExtensionContext) {
 		matchFilterProvider.removeMatch(matchFilter);
 	});
 
+	const selectSingleService = vscode.commands.registerCommand('log-explorer.selectSingleService', async (serviceFilter: any) => {
+		servicesFilterProvider.selectSingle(serviceFilter);
+	});
+
 	context.subscriptions.push(
 		logexContext,
 		openLogFile,
 		editConfig,
 		addMatch,
-		removeMatch);
+		removeMatch,
+		selectSingleService);
 }
 
 // This method is called when your extension is deactivated

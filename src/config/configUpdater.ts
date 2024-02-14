@@ -61,15 +61,15 @@ export class ConfigUpdater {
         if (newConfig.maxLinesCount != previousConfig.maxLinesCount)
             return true;
 
-        return false;
-    }
-
-    private hasLogCountMaybeChanged(newConfig: LogExplorerConfig, previousConfig: LogExplorerConfig): boolean {
         const newHiddenServices = newConfig.filteredServices?.filter(s => !s.selected).map(s => s.serviceName) ?? [];
         const previousHiddenServices = previousConfig.filteredServices?.filter(s => !s.selected).map(s => s.serviceName) ?? [];
         if (!this.containSameElements(newHiddenServices, previousHiddenServices))
             return true;
 
+        return false;
+    }
+
+    private hasLogCountMaybeChanged(newConfig: LogExplorerConfig, previousConfig: LogExplorerConfig): boolean {
         if (!this.containSameElements(newConfig.matches, previousConfig.matches))
             return true;
 

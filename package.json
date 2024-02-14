@@ -37,6 +37,10 @@
         "command": "log-explorer.editConfig",
         "title": "Edit",
         "icon": "$(edit)"
+      },
+      {
+        "command": "log-explorer.selectSingleService",
+        "title": "Only this service"
       }
     ],
     "viewsContainers": {
@@ -96,6 +100,10 @@
           "command": "log-explorer.removeMatch",
           "when": "view == logExplorerMatches",
           "group": "inline"
+        },
+        {
+          "command": "log-explorer.selectSingleService",
+          "when": "view == logExplorerServices"
         }
       ],
       "commandPalette": [
