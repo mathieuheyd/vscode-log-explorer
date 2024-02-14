@@ -6,7 +6,7 @@
   "publisher": "Mathieu Heyd",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mathieuheyd/log-explorer"
+    "url": "https://github.com/mathieuheyd/vscode-log-explorer"
   },
   "version": "0.0.1",
   "engines": {
