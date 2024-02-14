@@ -97,6 +97,20 @@
           "when": "view == logExplorerMatches",
           "group": "inline"
         }
+      ],
+      "commandPalette": [
+        {
+          "command": "log-explorer.addMatch",
+          "when": "never"
+        },
+        {
+          "command": "log-explorer.removeMatch",
+          "when": "never"
+        },
+        {
+          "command": "log-explorer.editConfig",
+          "when": "never"
+        }
       ]
     }
   },
