@@ -1,0 +1,128 @@
+{
+  "name": "log-explorer",
+  "displayName": "Log Explorer",
+  "description": "Exploring logs has never been easier",
+  "icon": "images/extension-icon-pigment.png",
+  "publisher": "Mathieu Heyd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathieuheyd/log-explorer"
+  },
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Visualization"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "log-explorer.openLogFile",
+        "title": "Log Explorer: Explore Log File"
+      },
+      {
+        "command": "log-explorer.addMatch",
+        "title": "Add",
+        "icon": "$(add)"
+      },
+      {
+        "command": "log-explorer.removeMatch",
+        "title": "Delete",
+        "icon": "$(close)"
+      },
+      {
+        "command": "log-explorer.editConfig",
+        "title": "Edit",
+        "icon": "$(edit)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "log-explorer",
+          "title": "Log Explorer",
+          "icon": "media/log-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "log-explorer": [
+        {
+          "id": "logExplorerGeneral",
+          "name": "General",
+          "when": "logex:activeLogEditor"
+        },
+        {
+          "id": "logExplorerMatches",
+          "name": "Matches",
+          "when": "logex:activeLogEditor"
+        },
+        {
+          "id": "logExplorerServices",
+          "name": "Services",
+          "when": "logex:activeLogEditor"
+        },
+        {
+          "id": "logExplorerTests",
+          "name": "Tests",
+          "when": "logex:activeLogEditor"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "logExplorerMatches",
+        "contents": "Filter log lines by adding patterns to match here"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "log-explorer.addMatch",
+          "when": "view == logExplorerMatches",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "log-explorer.editConfig",
+          "when": "view == logExplorerGeneral",
+          "group": "inline"
+        },
+        {
+          "command": "log-explorer.removeMatch",
+          "when": "view == logExplorerMatches",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.86.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@types/shell-quote": "^1.7.5",
+    "@types/uuid": "^9.0.8",
+    "shell-quote": "^1.8.1",
+    "uuid": "^9.0.1"
+  }
+}
