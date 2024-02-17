@@ -23,8 +23,10 @@ export class LogExplorerProvider implements vscode.TextDocumentContentProvider {
 
         var commands = await allMatchingLines(config);
         // filter services
-        const selectedServices = config.filteredServices?.filter(s => s.selected).map(s => s.serviceName) ?? [];
-        commands.push(await grepCommand(selectedServices));
+        if (config.filteredServices !== undefined && config.filteredServices.some(s => !s.selected)) {
+            const selectedServices = config.filteredServices?.filter(s => s.selected).map(s => s.serviceName) ?? [];
+            commands.push(await grepCommand(selectedServices));
+        }
         // limit number of lines
         commands.push(await headCommand(config.maxLinesCount));
 
