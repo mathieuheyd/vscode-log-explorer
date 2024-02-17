@@ -14,7 +14,7 @@ export async function allMatchingLines(config: LogExplorerConfig): Promise<Comma
     }
 
     if (config.matches.length > 0) {
-        commands.push(await grepCommand(config.matches, undefined));
+        commands.push(await grepCommand(config.matches));
     }
 
     return commands;

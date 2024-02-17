@@ -67,7 +67,7 @@ export class TestsFilterProvider implements vscode.TreeDataProvider<TestFilter> 
     }
 
     async fetchAllTests(fileUri: vscode.Uri): Promise<TestSuite[]> {
-        const command = await grepCommand(['WorkspaceService.DebugTool.Controllers.DebugInternalController|Starting test: '], undefined, fileUri);
+        const command = await grepCommand(['WorkspaceService.DebugTool.Controllers.DebugInternalController|Starting test: '], fileUri);
         return new Promise(function (resolve, reject) {
             const rl = executeReadlines(command);
 
