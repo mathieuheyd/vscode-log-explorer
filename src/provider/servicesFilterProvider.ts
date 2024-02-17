@@ -120,26 +120,31 @@ export class ServicesFilterProvider implements vscode.TreeDataProvider<ServiceFi
 
     async fetchServicesLogCount(displayLinesCommand: Command[]): Promise<ServiceLogCount[]> {
         const fullCommand = [...displayLinesCommand, await cutCommand(1)];
-        return new Promise(function (resolve, reject) {
-            const rl = executeReadlines(fullCommand);
+        return vscode.window.withProgress({
+            location: { viewId: 'logExplorerServices' },
+            cancellable: false,
+        }, async progress => {
+            return new Promise(function (resolve, reject) {
+                const rl = executeReadlines(fullCommand);
 
-            const servicesLogCount = new Map<string, number>();
-            rl.on('line', serviceName => {
-                if (serviceName === "") return;
-                const previousCount = servicesLogCount.get(serviceName);
-                if (previousCount === undefined)
-                    servicesLogCount.set(serviceName, 1);
-                else
-                    servicesLogCount.set(serviceName, previousCount + 1);
+                const servicesLogCount = new Map<string, number>();
+                rl.on('line', serviceName => {
+                    if (serviceName === "") return;
+                    const previousCount = servicesLogCount.get(serviceName);
+                    if (previousCount === undefined)
+                        servicesLogCount.set(serviceName, 1);
+                    else
+                        servicesLogCount.set(serviceName, previousCount + 1);
+                });
+
+                rl.on("close", () => {
+                    const serviceFilters = Array.from(servicesLogCount).map(e => { return {
+                        serviceName: e[0],
+                        logCount: e[1]
+                    }});
+                    resolve(serviceFilters);
+                 });
             });
-
-            rl.on("close", () => {
-                const serviceFilters = Array.from(servicesLogCount).map(e => { return {
-                    serviceName: e[0],
-                    logCount: e[1]
-                }});
-                resolve(serviceFilters);
-             });
         });
     }
 }

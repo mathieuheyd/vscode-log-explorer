@@ -27,6 +27,13 @@ export class LogExplorerProvider implements vscode.TextDocumentContentProvider {
         commands.push(await grepCommand(selectedServices));
         // limit number of lines
         commands.push(await headCommand(config.maxLinesCount));
-        return execute(commands);
+
+        return vscode.window.withProgress({
+            location: vscode.ProgressLocation.Window,
+            cancellable: false,
+            title: 'Fetching logs'
+        }, async progress => {
+            return execute(commands);
+        });
     }
 }
