@@ -15,7 +15,7 @@ export class ConfigProvider {
         const config = {
             id: id,
             fileUri: fileUri,
-            maxLinesCount: 100,
+            maxLinesCount: vscode.workspace.getConfiguration('logExplorer').get<number>('general.defaultDisplayedLogLines') ?? 100,
             filteredServices: undefined,
             matches: [],
             filteredTest: undefined

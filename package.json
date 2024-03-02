@@ -72,7 +72,7 @@
         {
           "id": "logExplorerTests",
           "name": "Tests",
-          "when": "logex:activeLogEditor"
+          "when": "logex:activeLogEditor && config.logExplorer.tests.enableFilterByTest"
         }
       ]
     },
@@ -120,6 +120,40 @@
           "when": "never"
         }
       ]
+    },
+    "configuration": {
+      "title": "Log Explorer",
+      "properties": {
+        "logExplorer.general.defaultDisplayedLogLines": {
+          "order": 1,
+          "type": "integer",
+          "default": 100,
+          "minimum": 0,
+          "description": "Default maximum amount of log lines to display"
+        },
+        "logExplorer.tests.enableFilterByTest": {
+          "order": 2,
+          "type": "boolean",
+          "default": false,
+          "description": "Enable / Disable filtering of logs between test start and test end"
+        },
+        "logExplorer.tests.testStartPattern": {
+          "order": 3,
+          "type": "string",
+          "default": "Starting test: {suiteName} - {testName}",
+          "description": "Test start pattern",
+          "pattern": "{suiteName}.*{testName}|{testName}.*{suiteName}",
+          "patternErrorMessage": "Pattern must contain both a {suiteName} and a {testName}"
+        },
+        "logExplorer.tests.testEndPattern": {
+          "order": 4,
+          "type": "string",
+          "default": "Ending test: {suiteName} - {testName}",
+          "description": "Test end pattern",
+          "pattern": "{suiteName}.*{testName}|{testName}.*{suiteName}",
+          "patternErrorMessage": "Pattern must contain both a {suiteName} and a {testName}"
+        }
+      }
     }
   },
   "scripts": {
