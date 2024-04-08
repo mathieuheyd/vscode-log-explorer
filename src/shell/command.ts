@@ -47,7 +47,7 @@ function executeWsl(command: Command | Command[]) : Promise<string>  {
 
     return new Promise((resolve, reject) => {
         exec(
-            `wsl --exec /bin/bash -c "${pipedCommand}"`,
+            `wsl --exec /bin/bash -c "${pipedCommand.replaceAll("\"", "\\\"")}"`,
             (err, stdout, stderr) => {
                 if (err) {
                     return reject('Error: ' + stderr);
