@@ -13,3 +13,14 @@ export async function grepCommand(matches: string[], fileUri?: vscode.Uri): Prom
         args: args,
     };
 }
+
+export async function grepRegexCommand(regex: string, fileUri?: vscode.Uri): Promise<Command> {
+    const args = ['-P', regex];
+    if (fileUri !== undefined)
+        args.push(await path(fileUri));
+
+    return {
+        tool: 'grep',
+        args: args,
+    };
+}

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { ConfigUpdater } from '../config/configUpdater';
 import { executeReadlines } from '../shell/command';
-import { grepCommand } from '../shell/grepCommand';
+import { grepCommand, grepRegexCommand } from '../shell/grepCommand';
 import { TestsCache } from '../config/cache';
 
 export class TestsFilterProvider implements vscode.TreeDataProvider<TestFilter> {
@@ -67,19 +67,24 @@ export class TestsFilterProvider implements vscode.TreeDataProvider<TestFilter> 
     }
 
     async fetchAllTests(fileUri: vscode.Uri): Promise<TestSuite[]> {
-        const command = await grepCommand(['WorkspaceService.DebugTool.Controllers.DebugInternalController|Starting test: '], fileUri);
+        const startPattern = this.getStartPattern();
+        if (startPattern === undefined)
+            return [];
+        const command = await grepRegexCommand(startPattern, fileUri);
         return new Promise(function (resolve, reject) {
             const rl = executeReadlines(command);
 
             const testSuites = new Map<string, string[]>();
             const testSuitesOrder: string[] = [];
+            const startRegex = new RegExp(startPattern);
 
             rl.on('line', line => {
                 if (line === "") return;
-                const fullTestName = line.slice(line.indexOf('Starting test: ') + 'Starting test: '.length, -1);
-                const split = fullTestName.split(' - ');
-                const testSuite = split[0];
-                const testName = split[1];
+                const match = startRegex.exec(line);
+                if (match === null || match.groups === undefined) return;
+                const testSuite = match.groups.suite;
+                const testName = match.groups.test;
+
                 let tests = testSuites.get(testSuite);
                 if (tests === undefined) {
                     tests = [];
@@ -94,6 +99,18 @@ export class TestsFilterProvider implements vscode.TreeDataProvider<TestFilter> 
                 resolve(suites);
              });
         });
+    }
+
+    getStartPattern(): string | undefined {
+        const startPattern = vscode.workspace.getConfiguration('logExplorer').get<string>('tests.testStartPattern');
+        if (startPattern === undefined)
+            return undefined;
+        return this.buildRegex(startPattern);
+    }
+
+    buildRegex(pattern: string): string {
+        const nameRegex = ".+";
+        return pattern.replace("{suiteName}", `(?<suite>${nameRegex})`).replace("{testName}", `(?<test>${nameRegex})`);
     }
 }
 
