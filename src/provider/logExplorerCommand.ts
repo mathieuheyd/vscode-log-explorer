@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { LogExplorerConfig } from "../config/logExplorerConfig";
 import { catCommand } from "../shell/catCommand";
 import { Command } from "../shell/command";
@@ -9,8 +10,10 @@ export async function allMatchingLines(config: LogExplorerConfig): Promise<Comma
     commands.push(await catCommand(config.fileUri));
 
     if (config.filteredTest !== undefined) {
-        const fullTestName = `${config.filteredTest.suiteName} - ${config.filteredTest.testName}`;
-        commands.push(await sedCommand(`Starting test: ${fullTestName}`, `Ending test: ${fullTestName}`));
+        const startPattern = buildStartTestPattern(config.filteredTest.suiteName, config.filteredTest.testName);
+        const endPattern = buildEndTestPattern(config.filteredTest.suiteName, config.filteredTest.testName);
+        if (startPattern !== undefined && endPattern !== undefined)
+            commands.push(await sedCommand(startPattern, endPattern));
     }
 
     if (config.matches.length > 0) {
@@ -18,4 +21,18 @@ export async function allMatchingLines(config: LogExplorerConfig): Promise<Comma
     }
 
     return commands;
+}
+
+function buildStartTestPattern(suiteName: string, testName: string): string | undefined {
+    const startPattern = vscode.workspace.getConfiguration('logExplorer').get<string>('tests.testStartPattern');
+    if (startPattern === undefined)
+        return undefined;
+    return startPattern.replace("{suiteName}", suiteName).replace("{testName}", testName);
+}
+
+function buildEndTestPattern(suiteName: string, testName: string): string | undefined {
+    const startPattern = vscode.workspace.getConfiguration('logExplorer').get<string>('tests.testEndPattern');
+    if (startPattern === undefined)
+        return undefined;
+    return startPattern.replace("{suiteName}", suiteName).replace("{testName}", testName);
 }
